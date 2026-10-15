@@ -8,3 +8,6 @@ let page=read('page.html').replace('/* STYLES */',()=>read('style.css')).replace
 fs.mkdirSync(path.join(root,'dist'),{recursive:true});fs.writeFileSync(path.join(root,'dist','index.html'),page);
 fs.writeFileSync(path.join(root,'dist','.nojekyll'),'');
 console.log(`Built dist/index.html (${Buffer.byteLength(page)} bytes); no network dependencies.`);
+
+fs.writeFileSync(path.join(root,'index.html'),page);
+fs.writeFileSync(path.join(root,'.nojekyll'),'');

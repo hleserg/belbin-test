@@ -29,3 +29,5 @@ test('Фиксированные граничные распределения �
   assert.equal(answers.every(validBlock),true);assert.equal(score(answers,source.key).reduce((a,b)=>a+b,0),70);
  }
 });
+
+test('Корневая страница для Pages совпадает с проверенной сборкой',()=>assert.equal(fs.readFileSync(new URL('../index.html',import.meta.url),'utf8'),html));

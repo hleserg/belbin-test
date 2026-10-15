@@ -45,7 +45,7 @@ SHA-256 исходников записаны в `src/data.json`. Извлече
 
 ### GitHub Pages
 
-Создайте публичный репозиторий `hleserg/belbin-test`. Загрузите проект. Включите Pages с GitHub Actions и используйте приложенный workflow `.github/workflows/pages.yml`: он проверяет расчёт и собирает HTML перед публикацией. Итоговый адрес при таком имени: `https://hleserg.github.io/belbin-test/` (ожидаемый адрес, не подтверждение публикации).
+Pages настроен на публикацию из ветки `main`, папки `/ (root)`. Файл `index.html` в корне — автономная сборка теста. `npm run build` обновляет одновременно корневой `index.html` и `dist/index.html`; коммитьте оба файла. Workflow `.github/workflows/pages.yml` проверяет расчёт и соответствие сборки исходникам. Публикацию выполняет стандартный workflow GitHub Pages. Адрес: `https://hleserg.github.io/belbin-test/`.
 
 ### Российский хостинг
 
