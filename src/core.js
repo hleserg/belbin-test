@@ -5,7 +5,7 @@ export function score(answers,key) {
 }
 export function extremes(scores) {
   const ordered=[...scores].sort((a,b)=>b-a);
-  return {high:scores.flatMap((v,i)=>v>=ordered[2]?[i]:[]),low:scores.flatMap((v,i)=>v<=ordered[5]?[i]:[])};
+  return {high:scores.flatMap((v,i)=>v>=ordered[2]?[i]:[]).sort((a,b)=>scores[b]-scores[a]||a-b),low:scores.flatMap((v,i)=>v<=ordered[5]?[i]:[]).sort((a,b)=>scores[a]-scores[b]||a-b)};
 }
 export function restore(raw) {
   try {

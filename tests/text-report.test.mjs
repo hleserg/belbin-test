@@ -1,0 +1,23 @@
+import {test} from 'node:test';
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import vm from 'node:vm';
+import {score,extremes} from '../src/core.js';
+const data=JSON.parse(fs.readFileSync('src/data.json'));
+const app=fs.readFileSync('src/app.js','utf8');
+const report=app.slice(app.indexOf('function reportText(){'),app.indexOf('function downloadText(){'));
+test('Shared text orders both extremes and places only filled comments below their role',()=>{
+ const comments=['Да, это про меня.','','   ','','Хочу развивать эту роль.','','',''];
+ const text=vm.runInNewContext(report+';reportText()',{data,state:{answers:data.fixture.answers,comments},score,extremes,SITE_URL:'https://hleserg.github.io/belbin-test/'});
+ const high=text.split('Наибольшие баллы')[1].split('Наименьшие баллы')[0];
+ assert.ok(high.indexOf('Дипломат: 18')<high.indexOf('Доводчик: 14'));
+ assert.ok(high.indexOf('Доводчик: 14')<high.indexOf('Исполнитель: 11'));
+ const low=text.split('Наименьшие баллы')[1].split('Все роли:')[0];
+ assert.ok(low.indexOf('Координатор: 0')<low.indexOf('Разведчик: 4'));
+ assert.ok(low.indexOf('Разведчик: 4')<low.indexOf('Эксперт: 6'));
+ const all=text.split('Все роли:')[1].split('Ответы по блокам:')[0];
+ assert.ok(all.includes('Доводчик: 14\nМой комментарий: Да, это про меня.'));
+ assert.ok(all.includes('Разведчик: 4\nМой комментарий: Хочу развивать эту роль.'));
+ assert.equal((all.match(/Мой комментарий:/g)||[]).length,2);
+ assert.ok(all.indexOf('Дипломат: 18')<all.indexOf('Координатор: 0'));
+});

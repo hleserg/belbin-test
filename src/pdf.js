@@ -45,7 +45,7 @@ export function createReportPdf(pages,font){
 export function layoutReport(data,answers,comments,font){
  const scores=data.key[0].map((_,i)=>data.key.reduce((sum,row,b)=>sum+answers[b][row[i]-(b+1)*10],0));
  const order=scores.map((_,i)=>i).sort((a,b)=>scores[b]-scores[a]||a-b);
- const high=order.filter(i=>scores[i]>=scores[order[2]]),low=order.filter(i=>scores[i]<=scores[order[5]]);
+ const high=order.filter(i=>scores[i]>=scores[order[2]]),low=order.filter(i=>scores[i]<=scores[order[5]]).sort((a,b)=>scores[a]-scores[b]||a-b);
  const pages=[[]];let page=pages[0],y=48;
  const color='#193d33',muted='#596b60',green='#164d43';
  const measure=(s,size)=>Array.from(s).reduce((n,c)=>n+(font.chars[c.codePointAt(0)]||font.chars[63])[1]*size/1000,0);
