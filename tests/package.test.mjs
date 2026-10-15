@@ -34,7 +34,7 @@ test('Корневая страница для Pages совпадает с пр�
 
 test('Мобильная шапка сохраняет пробел, PDF и текст содержат ссылку на сайт',()=>{
  assert.ok(html.includes('Командные <br>роли'));
- assert.ok(html.includes('Поделиться как PDF'));
+ assert.ok(html.includes('Поделиться PDF'));
  assert.ok(html.includes("'Пройти тест: '+SITE_URL"));
  assert.ok(html.includes('class="small report-site"'));
  assert.ok(html.includes('aria-hidden="true" focusable="false"'));

@@ -7,11 +7,3 @@ export async function shareReport(text, browser) {
     return error?.name === 'AbortError' ? 'cancelled' : 'failed';
   }
 }
-
-export async function sharePdfFile(file,browser){
- try {
-  if(typeof browser.share!=='function'||typeof browser.canShare!=='function'||!browser.canShare({files:[file]}))return 'unavailable';
-  await browser.share({files:[file],title:'Тест Белбина — результаты'});
-  return 'shared';
- }catch(error){return error?.name==='AbortError'?'cancelled':'failed';}
-}
