@@ -17,9 +17,9 @@ export function createReportPdf(pages,font){
  pages.forEach((nodes,index)=>{
   let content='';
   for(const n of nodes)content+=n.type==='text'?draw(n.text,n.x,841.89-n.y,n.size,rgb(n.color)):`${rgb(n.color)} rg ${n.x} ${841.89-n.y-n.h} ${n.w} ${n.h} re f\n`;
-  const link=add(`<< /Type /Annot /Subtype /Link /Rect [48 23 455 43] /Border [0 0 0] /A << /S /URI /URI (${SITE_URL}) >> >>`);
+  const links=nodes.filter(n=>n.type==='text'&&n.text==='Пройти тест: '+SITE_URL).map(n=>add(`<< /Type /Annot /Subtype /Link /Rect [${n.x} ${841.89-n.y-3} 547 ${841.89-n.y+n.size}] /Border [0 0 0] /A << /S /URI /URI (${SITE_URL}) >> >>`));
   const contentId=add(stream(bytes(content)));
-  pageIds.push(add(`<< /Type /Page /Parent ${pagesId} 0 R /MediaBox [0 0 595.28 841.89] /Resources << /Font << /F1 ${fontId} 0 R >> >> /Contents ${contentId} 0 R /Annots [${link} 0 R] >>`));
+  pageIds.push(add(`<< /Type /Page /Parent ${pagesId} 0 R /MediaBox [0 0 595.28 841.89] /Resources << /Font << /F1 ${fontId} 0 R >> >> /Contents ${contentId} 0 R /Annots [${links.map(id=>`${id} 0 R`).join(' ')}] >>`));
  });
  const fontBytes=Uint8Array.from(atob(font.base64),c=>c.charCodeAt(0));
  const fileId=add(stream(fontBytes,`/Length1 ${fontBytes.length}`));
@@ -81,10 +81,11 @@ export function layoutReport(data,answers,comments,font){
  }
  paragraph('Описания приведены по исходному документу без изменения формулировок.',9);
  paragraph('Источник: '+data.source.url,8);
- pages.forEach((p,i)=>{p.push({type:'rect',x:48,y:797,w:499,h:.5,color:'#c7d2c7'});p.push({type:'text',text:'Пройти тест: '+SITE_URL,x:48,y:812,size:8,color:green});p.push({type:'text',text:`${i+1} / ${pages.length}`,x:510,y:812,size:8,color:muted});});
+ paragraph('Пройти тест: '+SITE_URL,10);
+ pages.forEach((p,i)=>{p.push({type:'rect',x:48,y:797,w:499,h:.5,color:'#c7d2c7'});p.push({type:'text',text:`${i+1} / ${pages.length}`,x:510,y:812,size:8,color:muted});});
  return pages;
 }
 export function reportPrintHtml(pages){
  const escape=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
- return pages.map(nodes=>`<svg xmlns="http://www.w3.org/2000/svg" class="report-page" viewBox="0 0 595.28 841.89" role="img" aria-label="Страница результата">${nodes.map(n=>n.type==='rect'?`<rect x="${n.x}" y="${n.y}" width="${n.w}" height="${n.h}" fill="${n.color}"/>`:`<text x="${n.x}" y="${n.y}" font-size="${n.size}" fill="${n.color}">${escape(n.text)}</text>`).join('')}<a href="${SITE_URL}"><rect x="48" y="800" width="410" height="18" fill="transparent"/></a></svg>`).join('');
+ return pages.map(nodes=>`<svg xmlns="http://www.w3.org/2000/svg" class="report-page" viewBox="0 0 595.28 841.89" role="img" aria-label="Страница результата">${nodes.map(n=>n.type==='rect'?`<rect x="${n.x}" y="${n.y}" width="${n.w}" height="${n.h}" fill="${n.color}"/>`:`<text x="${n.x}" y="${n.y}" font-size="${n.size}" fill="${n.color}">${escape(n.text)}</text>`).join('')}${nodes.filter(n=>n.type==='text'&&n.text==='Пройти тест: '+SITE_URL).map(n=>`<a href="${SITE_URL}"><rect x="${n.x}" y="${n.y-n.size}" width="499" height="${n.size+4}" fill="transparent"/></a>`).join('')}</svg>`).join('');
 }

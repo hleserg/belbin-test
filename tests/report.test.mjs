@@ -14,6 +14,8 @@ test('Full report preserves descriptions, comments, chart and calculation table 
  assert.equal(text.match(/Это мой комментарий\./g).length,8);
  assert.ok(text.includes('Проверить расчёт по блокам'));
  assert.ok(layout.flat().filter(n=>n.type==='rect').length>=16);
+ assert.equal(layout.flat().filter(n=>n.type==='text'&&n.text.startsWith('Пройти тест:')).length,1);
+ assert.ok(layout.at(-1).some(n=>n.type==='text'&&n.text.startsWith('Пройти тест:')&&n.y<797));
  const html=reportPrintHtml(layout);assert.ok(html.includes('Это мой комментарий.'));
  const pdf=createReportPdf(layout,font);assert.ok(new TextDecoder().decode(pdf).startsWith('%PDF'));
  fs.mkdirSync('tmp/pdfs',{recursive:true});fs.writeFileSync('tmp/pdfs/full-report.pdf',pdf);
